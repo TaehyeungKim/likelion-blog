@@ -1,16 +1,16 @@
 import { SmallPost } from "./components/SmallPost";
-import { Button } from "@/shared/components";
-import { Input } from "@/shared/components";
+import { Button, Input, TagBadge, PostDialog } from "@/shared/components";
 import { useState, useEffect, useContext } from "react";
-import { SearchTag } from "@/shared/components";
-import { CreateDialog } from "./components/CreateDialog";
-import { getPosts, getTags, createPost, getPostById } from "./api";
+import { getPosts, getTags, getPostById } from "@/shared/api";
+import { createPost } from "./api";
 import { UserContext } from "@/shared/context";
+import { useNavigate } from "react-router";
 
 export default function Home() {
   const { user } = useContext(UserContext);
   const [posts, setPosts] = useState([]);
   const [searchTags, setSearchTags] = useState([]);
+  const navigate = useNavigate();
 
   const [storedTags, setStoredTags] = useState([]);
 
@@ -46,7 +46,7 @@ export default function Home() {
   };
 
   return (
-    <div className="pb-10">
+    <div className="pb-20 pt-14">
       <div className="flex flex-col justify-center items-center mb-5">
         <div className="w-full mb-16 flex justify-center">
           <h1 className="uppercase text-6xl text-black">my blog</h1>
@@ -60,7 +60,7 @@ export default function Home() {
         </div>
         <div className="flex mt-5 justify-center flex-wrap">
           {searchTags.map((tag) => {
-            return <SearchTag key={tag.id} tag={tag} />;
+            return <TagBadge key={tag.id} tag={tag} />;
           })}
         </div>
       </div>
@@ -71,13 +71,19 @@ export default function Home() {
             key={post.id}
             className="w-full flex justify-center items-center"
           >
-            <SmallPost post={post} />
+            <SmallPost
+              post={post}
+              onClick={() => {
+                console.log(post.id);
+                navigate(`/post/${post.id}`);
+              }}
+            />
           </div>
         ))}
       </div>
       {user && (
         <div className="flex justify-center m-20">
-          <CreateDialog
+          <PostDialog
             triggerButton={
               <Button className="!bg-amber-500 text-white">작성</Button>
             }

@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-export const SearchTag = ({ tag, onClick, rightSlot, className }) => {
+export const TagBadge = ({ tag, onClick, rightSlot, className }) => {
   return (
     <Badge
       key={tag.id}

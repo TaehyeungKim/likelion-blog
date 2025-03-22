@@ -8,6 +8,7 @@ export const posts = [
     tags: [1, 2, 3],
     like_users: [1, 2],
     created_at: "2024-02-04T07:42:50.658501Z",
+    comments: [1, 2, 3],
   },
   {
     id: 2,
@@ -17,6 +18,7 @@ export const posts = [
     tags: [1, 4],
     like_users: [4],
     created_at: "2024-02-04T07:42:50.658501Z",
+    comments: [],
   },
   {
     id: 3,
@@ -26,6 +28,7 @@ export const posts = [
     tags: [5, 6],
     like_users: [],
     created_at: "2024-02-04T07:42:50.658501Z",
+    comments: [],
   },
   {
     id: 4,
@@ -35,6 +38,7 @@ export const posts = [
     tags: [7, 8],
     like_users: [0, 1, 2],
     created_at: "2024-02-04T07:42:50.658501Z",
+    comments: [],
   },
   {
     id: 5,
@@ -44,5 +48,6 @@ export const posts = [
     tags: [1, 9],
     like_users: [3],
     created_at: "2024-02-04T07:42:50.658501Z",
+    comments: [],
   },
 ];

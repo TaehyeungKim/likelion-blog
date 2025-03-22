@@ -7,6 +7,7 @@ import { instance } from "@/shared/api";
  *  title: string;
  *  content: string;
  *  author: string;
+ *  authorName: string;
  *  tags: {
  *    id: number;
  *    content: string;
@@ -33,6 +34,7 @@ export const getPosts = async () => {
  *  title: string;
  *  content: string;
  *  author: string;
+ *  authorName: string;
  *  tags: {
  *    id: number;
  *    content: string;
