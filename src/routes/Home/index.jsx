@@ -1,63 +1,58 @@
-import { posts } from "../../data/posts";
 import { SmallPost } from "./components/SmallPost";
-import { useNavigate } from "react-router";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useEffect, useState, useMemo } from "react";
+import { Button } from "@/shared/components";
+import { Input } from "@/shared/components";
+import { useState, useEffect, useContext } from "react";
 import { SearchTag } from "@/shared/components";
-
-const getTaglistsFromPosts = (posts) => {
-  const tagList = posts.reduce((acc, post) => {
-    if (post) {
-      for (let tag of post.tags) {
-        acc.add(tag);
-      }
-    }
-    return acc;
-  }, new Set());
-
-  return [...tagList];
-};
+import { CreateDialog } from "./components/CreateDialog";
+import { getPosts, getTags, createPost, getPostById } from "./api";
+import { UserContext } from "@/shared/context";
 
 export default function Home() {
-  const navigate = useNavigate();
-  const [homepagePosts, setHomepagePosts] = useState([]);
-  const [searchTags, setSearchTags] = useState(() =>
-    getTaglistsFromPosts(posts)
-  );
+  const { user } = useContext(UserContext);
+  const [posts, setPosts] = useState([]);
+  const [searchTags, setSearchTags] = useState([]);
 
-  const tags = useMemo(() => {
-    const tagList = homepagePosts.reduce((acc, post) => {
-      if (post) {
-        for (let tag of post.tags) {
-          console.log(tag);
-          acc.add(tag);
-        }
-      }
-      return acc;
-    }, new Set());
-    return [...tagList];
-  }, [homepagePosts]);
+  const [storedTags, setStoredTags] = useState([]);
 
-  const handleSearchTagInputChange = (e) => {
-    const { value } = e.target;
-    const newTags = tags.filter((tag) => tag.includes(value));
-    setSearchTags(newTags);
+  const fetchPosts = async () => {
+    const posts = await getPosts();
+    setPosts(posts);
+  };
+
+  const fetchTags = async () => {
+    const tags = await getTags();
+    setSearchTags(tags);
+    setStoredTags(tags);
   };
 
   useEffect(() => {
-    setHomepagePosts(posts);
+    fetchPosts();
+    fetchTags();
   }, []);
+  const handleSearchTagInputChange = (e) => {
+    const { value } = e.target;
+    const newTags = storedTags.filter((tag) => tag.content.includes(value));
+    setSearchTags(newTags);
+  };
+
+  const handleCreatePost = async (post) => {
+    const createResponse = await createPost({
+      ...post,
+      author: user.username,
+    });
+    const newPost = await getPostById(createResponse.postId);
+    setPosts([...posts, newPost]);
+    fetchTags();
+  };
 
   return (
-    <div>
+    <div className="pb-10">
       <div className="flex flex-col justify-center items-center mb-5">
         <div className="w-full mb-16 flex justify-center">
           <h1 className="uppercase text-6xl text-black">my blog</h1>
         </div>
         <div className="w-[90vw] max-w-md flex justify-center">
           <Input
-            className="focus-visible:ring-amber-500 focus-visible:ring-2 focus-visible:border-transparent selection:bg-amber-300 selection:text-black"
             type="text"
             placeholder="태그를 검색하세요"
             onChange={handleSearchTagInputChange}
@@ -65,7 +60,6 @@ export default function Home() {
         </div>
         <div className="flex mt-5 justify-center flex-wrap">
           {searchTags.map((tag) => {
-            console.log("tag", tag);
             return <SearchTag key={tag.id} tag={tag} />;
           })}
         </div>
@@ -81,11 +75,16 @@ export default function Home() {
           </div>
         ))}
       </div>
-      <div className="flex justify-center m-20">
-        <Button className="!bg-amber-500" onClick={() => navigate("/create")}>
-          작성
-        </Button>
-      </div>
+      {user && (
+        <div className="flex justify-center m-20">
+          <CreateDialog
+            triggerButton={
+              <Button className="!bg-amber-500 text-white">작성</Button>
+            }
+            onSubmit={handleCreatePost}
+          />
+        </div>
+      )}
     </div>
   );
 }

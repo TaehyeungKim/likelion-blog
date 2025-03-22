@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import {
   Card,
@@ -8,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { SearchTag } from "@/shared/components";
+
 export const SmallPost = ({ post }) => {
   const navigate = useNavigate();
 
@@ -18,12 +20,14 @@ export const SmallPost = ({ post }) => {
           {post.title}
         </CardTitle>
         <CardDescription className="text-sm text-start">
-          {post.author.username}
+          {post.author}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-wrap mt-5">
-          {post.tags.map((tag) => tag && <SearchTag key={tag.id} tag={tag} />)}
+          {post.tags.map((tag) => (
+            <SearchTag key={tag.id} tag={tag} />
+          ))}
         </div>
       </CardContent>
       <CardFooter>
